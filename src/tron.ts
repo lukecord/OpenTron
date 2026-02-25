@@ -1,6 +1,8 @@
 import "dotenv/config";
 import { startProxy } from "./proxy.js";
-import { startApi } from "./api.js";
+// NOTE: Remote API (port 9999) is not yet tested. To enable it, uncomment
+// the import below and the startApi() call in main().
+// import { startApi } from "./api.js";
 import { grid, logStartup } from "./logger.js";
 
 // ─── TRON — Trusted Runtime Oversight Node ─────────────────────────────────
@@ -29,7 +31,8 @@ function requireEnv(name: string): string {
     return value;
 }
 
-const TRON_DISC_KEY = requireEnv("TRON_DISC_KEY");
+// TRON_DISC_KEY is only needed if the remote API is enabled (see below)
+const TRON_DISC_KEY = process.env.TRON_DISC_KEY ?? "";
 const OPENCLAW_GATEWAY_TOKEN = requireEnv("OPENCLAW_GATEWAY_TOKEN");
 
 const TRON_PORT = parseInt(process.env.TRON_PORT ?? "18789", 10);
@@ -41,45 +44,46 @@ const TRON_KILL_WORD = process.env.TRON_KILL_WORD ?? "DEREZ";
 
 async function main(): Promise<void> {
     console.log(`
-  ╔═══════════════════════════════════════════════════════════════╗
-  ║                                                               ║
-  ║   ████████╗██████╗  ██████╗ ███╗   ██╗                       ║
-  ║   ╚══██╔══╝██╔══██╗██╔═══██╗████╗  ██║                       ║
-  ║      ██║   ██████╔╝██║   ██║██╔██╗ ██║                       ║
-  ║      ██║   ██╔══██╗██║   ██║██║╚██╗██║                       ║
-  ║      ██║   ██║  ██║╚██████╔╝██║ ╚████║                       ║
-  ║      ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝                       ║
-  ║                                                               ║
-  ║   Trusted Runtime Oversight Node                              ║
-  ║   Guardian Program v1.0.0                                     ║
-  ║                                                               ║
-  ╚═══════════════════════════════════════════════════════════════╝
+  ╔═══════════════════════════════════════════════════════════════════════════╗
+  ║                                                                           ║
+  ║    ██████╗ ██████╗ ███████╗███╗   ██╗████████╗██████╗  ██████╗ ███╗   ██╗ ║
+  ║   ██╔═══██╗██╔══██╗██╔════╝████╗  ██║╚══██╔══╝██╔══██╗██╔═══██╗████╗  ██║ ║
+  ║   ██║   ██║██████╔╝█████╗  ██╔██╗ ██║   ██║   ██████╔╝██║   ██║██╔██╗ ██║ ║
+  ║   ██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║   ██║   ██╔══██╗██║   ██║██║╚██╗██║ ║
+  ║   ╚██████╔╝██║     ███████╗██║ ╚████║   ██║   ██║  ██║╚██████╔╝██║ ╚████║ ║
+  ║    ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ║
+  ║                                                                           ║
+  ║   Guardian Program v1.0.0                                                 ║
+  ║                                                                           ║
+  ╚═══════════════════════════════════════════════════════════════════════════╝
   `);
 
     grid.info("[GRID] ─── TRON initialization sequence ───");
     grid.info("[GRID] Proxy port     : %d (intercepting OpenClaw traffic)", TRON_PORT);
     grid.info("[GRID] OpenClaw port  : %d (forwarding target)", OPENCLAW_PORT);
-    grid.info("[GRID] Remote API port: %d (Identity Disc secured)", TRON_API_PORT);
+    grid.info("[GRID] Remote API     : disabled (not yet tested)");
     grid.info("[GRID] Kill word      : %s", TRON_KILL_WORD);
-    grid.info("[GRID] Identity Disc  : configured (not logged)");
     grid.info("[GRID] Gateway Token  : configured (not logged)");
 
     try {
-        // Launch both servers concurrently
-        await Promise.all([
-            startProxy({
-                tronPort: TRON_PORT,
-                openclawPort: OPENCLAW_PORT,
-                killWord: TRON_KILL_WORD,
-                gatewayToken: OPENCLAW_GATEWAY_TOKEN,
-            }),
-            startApi({
-                apiPort: TRON_API_PORT,
-                openclawPort: OPENCLAW_PORT,
-                discKey: TRON_DISC_KEY,
-                gatewayToken: OPENCLAW_GATEWAY_TOKEN,
-            }),
-        ]);
+        // Launch the proxy server
+        await startProxy({
+            tronPort: TRON_PORT,
+            openclawPort: OPENCLAW_PORT,
+            killWord: TRON_KILL_WORD,
+            gatewayToken: OPENCLAW_GATEWAY_TOKEN,
+        });
+
+        // NOTE: Remote API (port 9999) is not yet tested. To enable it,
+        // uncomment the import at the top of this file and the block below,
+        // and set TRON_DISC_KEY in your .env file.
+        //
+        // await startApi({
+        //     apiPort: TRON_API_PORT,
+        //     openclawPort: OPENCLAW_PORT,
+        //     discKey: TRON_DISC_KEY,
+        //     gatewayToken: OPENCLAW_GATEWAY_TOKEN,
+        // });
 
         logStartup(TRON_PORT, TRON_API_PORT);
         grid.info("[GRID] ─── TRON is online. The Grid is watching. ───");
