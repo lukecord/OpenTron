@@ -80,32 +80,6 @@ OpenTRON will execute the kill chain and respond:
 
 ---
 
-## Remote DEREZ — From Anywhere
-
-OpenTRON exposes a remote HTTPS API on port 9999. Use it from your phone, another machine, or a one-tap Shortcut:
-
-```bash
-# Check Grid status
-curl -k https://localhost:9999/status \
-  -H "Authorization: Bearer YOUR_TRON_DISC_KEY"
-
-# Trigger full DEREZ
-curl -k -X POST https://localhost:9999/derez \
-  -H "Authorization: Bearer YOUR_TRON_DISC_KEY"
-
-# Derez a specific process by name
-curl -k -X POST https://localhost:9999/derez/node \
-  -H "Authorization: Bearer YOUR_TRON_DISC_KEY"
-```
-
-> **Note:** The `-k` flag skips TLS verification for the self-signed cert. For production, replace `tron.cert.pem` and `tron.key.pem` with real certificates.
-
-### iOS / Android Shortcut
-
-Create a shortcut that sends a POST request to `https://YOUR_SERVER_IP:9999/derez` with the header `Authorization: Bearer YOUR_TRON_DISC_KEY`. One tap to derez from anywhere.
-
----
-
 ## How OpenTRON Works
 
 ```
@@ -137,22 +111,12 @@ When OpenTRON detects the kill word, it executes a 3-step sequence:
 
 | Variable | Purpose | Default |
 |---|---|---|
-| `TRON_DISC_KEY` | Bearer token for remote API (Identity Disc) | *required* |
+| `TRON_DISC_KEY` | Bearer token for remote API (Identity Disc)
 | `OPENCLAW_GATEWAY_TOKEN` | OpenClaw's token for graceful stop | *required* |
 | `TRON_KILL_WORD` | Keyword that triggers DEREZ | `DEREZ` |
 | `TRON_PORT` | Port OpenTRON listens on | `18789` |
 | `OPENCLAW_PORT` | Port OpenClaw was moved to | `18790` |
 | `TRON_API_PORT` | Port for remote REST API | `9999` |
-
----
-
-## TLS Certificates
-
-On first run, OpenTRON auto-generates a self-signed certificate for the remote API. To use a real certificate:
-
-1. Place your cert at `tron.cert.pem` in the project directory
-2. Place your key at `tron.key.pem` in the project directory
-3. Restart OpenTRON
 
 ---
 
