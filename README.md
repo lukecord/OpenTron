@@ -1,8 +1,19 @@
-# OpenTRON
+  ╔═══════════════════════════════════════════════════════════════════════════╗
+  ║                                                                           ║
+  ║    ██████╗ ██████╗ ███████╗███╗   ██╗████████╗██████╗  ██████╗ ███╗   ██╗ ║
+  ║   ██╔═══██╗██╔══██╗██╔════╝████╗  ██║╚══██╔══╝██╔══██╗██╔═══██╗████╗  ██║ ║
+  ║   ██║   ██║██████╔╝█████╗  ██╔██╗ ██║   ██║   ██████╔╝██║   ██║██╔██╗ ██║ ║
+  ║   ██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║   ██║   ██╔══██╗██║   ██║██║╚██╗██║ ║
+  ║   ╚██████╔╝██║     ███████╗██║ ╚████║   ██║   ██║  ██║╚██████╔╝██║ ╚████║ ║
+  ║    ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ║
+  ║                                                                           ║
+  ║   Guardian Program v1.0.0                                                 ║
+  ║                                                                           ║
+  ╚═══════════════════════════════════════════════════════════════════════════╝
 
 *A guardian program for the Grid.*
 
-(Note: This was all just vibe-coded for fun, and I have not thoroughly tested everything. Use at your own risk!)
+(Note: This was all just vibe-coded for fun, and I have not thoroughly tested everything. Use at your own risk! The following is written by AI:)
 
 OpenTRON is a transparent proxy and remote kill switch for [OpenClaw](https://github.com/openclaw). It sits silently between your clients and OpenClaw, monitoring all traffic for signs of a corrupted program — and can derez (terminate) OpenClaw instantly when you give the word.
 
