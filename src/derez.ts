@@ -191,7 +191,7 @@ async function step1Graceful(
     token: string
 ): Promise<boolean> {
     try {
-        logDerezStep(1, "graceful POST /api/channels/stop", false);
+        grid.info("[GRID] DEREZ step 1: graceful POST /api/channels/stop");
         const response = await fetch(
             `http://localhost:${port}/api/channels/stop`,
             {
@@ -230,7 +230,7 @@ async function step1Graceful(
 
 async function step2Force(port: number): Promise<boolean> {
     try {
-        logDerezStep(2, `force kill process on port ${port}`, false);
+        grid.info("[GRID] DEREZ step 2: force kill process on port %d", port);
         const findProcess = (await import("find-process")).default;
         const processes = await findProcess("port", port);
 
@@ -267,11 +267,7 @@ async function step2Force(port: number): Promise<boolean> {
 async function step3Nuclear(port: number): Promise<boolean> {
     try {
         const platform = process.platform;
-        logDerezStep(
-            3,
-            `nuclear fallback (${platform})`,
-            false
-        );
+        grid.info("[GRID] DEREZ step 3: nuclear fallback (%s)", platform);
 
         if (platform === "win32") {
             // Windows: find PID via netstat, then taskkill

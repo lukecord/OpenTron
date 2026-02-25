@@ -14,6 +14,15 @@ import {
 // HTTP and WebSocket traffic to OpenClaw on OPENCLAW_PORT (18790).
 // It inspects every client→OpenClaw message for the kill word.
 
+// Valid WebSocket close codes: 1000, or 3000-4999 for app use
+// When a process is killed, close events may fire with invalid codes
+function safeCloseCode(code: number | undefined): number {
+    if (code === undefined || code === null) return 1000;
+    if (code === 1000 || code === 1001) return code;
+    if (code >= 3000 && code <= 4999) return code;
+    return 1000; // Default to normal close
+}
+
 // Headers that must be stripped so OpenClaw sees connections as local
 const STRIPPED_HEADERS = new Set([
     "x-forwarded-for",
@@ -286,8 +295,12 @@ export function startProxy(config: ProxyConfig): Promise<void> {
 
                 openclawWs.on("close", (code, reason) => {
                     openclawAlive = false;
-                    if (clientWs.readyState === WebSocket.OPEN) {
-                        clientWs.close(code, reason.toString());
+                    try {
+                        if (clientWs.readyState === WebSocket.OPEN) {
+                            clientWs.close(safeCloseCode(code), reason?.toString() ?? "OpenClaw disconnected");
+                        }
+                    } catch {
+                        // Client may already be gone
                     }
                     logDisconnection(clientIp, `OpenClaw closed (${code})`);
                 });
@@ -302,8 +315,12 @@ export function startProxy(config: ProxyConfig): Promise<void> {
 
                 clientWs.on("close", (code, reason) => {
                     clientAlive = false;
-                    if (openclawWs.readyState === WebSocket.OPEN) {
-                        openclawWs.close(code, reason.toString());
+                    try {
+                        if (openclawWs.readyState === WebSocket.OPEN) {
+                            openclawWs.close(safeCloseCode(code), reason?.toString() ?? "Client disconnected");
+                        }
+                    } catch {
+                        // OpenClaw may already be gone
                     }
                     logDisconnection(clientIp, `Client closed (${code})`);
                 });
