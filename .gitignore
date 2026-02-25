@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env
+grid.log
+tron.cert.pem
+tron.key.pem
+tron.pfx
+*.pem

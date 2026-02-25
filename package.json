@@ -1,0 +1,29 @@
+{
+  "name": "tron",
+  "version": "1.0.0",
+  "description": "TRON — Trusted Runtime Oversight Node. A transparent proxy and remote kill switch for OpenClaw.",
+  "type": "module",
+  "main": "dist/tron.js",
+  "scripts": {
+    "start": "tsx src/tron.ts",
+    "dev": "tsx watch src/tron.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fastify/rate-limit": "^9.1.0",
+    "dotenv": "^16.4.7",
+    "fastify": "^4.29.1",
+    "find-process": "^1.4.7",
+    "fkill": "^9.0.0",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "@types/ws": "^8.5.14",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3"
+  }
+}
